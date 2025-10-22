@@ -8,5 +8,8 @@ import (
 
 func main() {
 	bin, err := bins.NewBin("example", false)
-	fmt.Println(bin, err)
+	if err != nil {
+		fmt.Println(err.Error())
+	}
+	print(bin.Name, "\n")
 }

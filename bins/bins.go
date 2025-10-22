@@ -1,21 +1,32 @@
 package bins
 
 import (
+	"encoding/json"
 	"errors"
+	"fmt"
 	"time"
 
+	"3-struct/file"
 	"github.com/google/uuid"
 )
 
-type bin struct {
-	id        string
-	isPrivate bool
-	createdAt time.Time
-	name      string
+type Bin struct {
+	Id        string    `json:"id"`
+	IsPrivate bool      `json:"is_private"`
+	CreatedAt time.Time `json:"created_at"`
+	Name      string    `json:"name"`
 }
 
-type binList struct {
-	bins []bin
+type BinList struct {
+	Bins []Bin `json:"bins"`
+}
+
+func (bins *BinList) ToBytes() ([]byte, error) {
+	file, err := json.Marshal(bins)
+	if err != nil {
+		fmt.Println("Error marshalling to JSON:", err.Error())
+	}
+	return file, err
 }
 
 func generateID() string {
@@ -23,17 +34,32 @@ func generateID() string {
 	return id.String()
 }
 
-func NewBin(name string, isPrivate bool) (*bin, error) {
+func NewBin(name string, isPrivate bool) (*Bin, error) {
 	if name == "" {
-		return &bin{}, errors.New("name can't be empty")
+		return &Bin{}, errors.New("name can't be empty")
 	}
 	id := generateID()
 	createdAt := time.Now()
-	result := bin{
-		id:        id,
-		isPrivate: isPrivate,
-		createdAt: createdAt,
-		name:      name,
+	result := Bin{
+		Id:        id,
+		IsPrivate: isPrivate,
+		CreatedAt: createdAt,
+		Name:      name,
 	}
 	return &result, nil
+}
+
+func NewBins() *BinList {
+	file, err := file.ReadFile("bins.json")
+	if err != nil {
+		return &BinList{
+			Bins: []Bin{},
+		}
+	}
+	var bins BinList
+	err = json.Unmarshal(file, &bins)
+	if err != nil {
+		fmt.Println(err.Error())
+	}
+	return &bins
 }

@@ -1,1 +1,34 @@
 package file
+
+import (
+	"errors"
+	"fmt"
+	"os"
+	"strings"
+)
+
+func ReadFile(fileName string) ([]byte, error) {
+	data, err := os.ReadFile(fileName)
+	if err != nil {
+		return nil, err
+	}
+	if !strings.HasSuffix(fileName, ".json") {
+		return nil, errors.New("file isn't valid json file")
+	}
+	return data, nil
+}
+
+func WriteFile(content []byte, name string) {
+	file, err := os.Create(name)
+
+	if err != nil {
+		fmt.Println("Error creating file:", err)
+	}
+	defer file.Close()
+	_, err = file.Write(content)
+	if err != nil {
+		fmt.Println("Error writing to file:", err)
+		return
+	}
+	fmt.Println("\nFile written successfully")
+}
