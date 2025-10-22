@@ -1,8 +1,10 @@
 package file
 
 import (
+	"errors"
 	"fmt"
 	"os"
+	"strings"
 )
 
 func ReadFile(fileName string) ([]byte, error) {
@@ -10,11 +12,15 @@ func ReadFile(fileName string) ([]byte, error) {
 	if err != nil {
 		return nil, err
 	}
+	if !strings.HasSuffix(fileName, ".json") {
+		return nil, errors.New("file isn't valid json file")
+	}
 	return data, nil
 }
 
 func WriteFile(content []byte, name string) {
 	file, err := os.Create(name)
+
 	if err != nil {
 		fmt.Println("Error creating file:", err)
 	}
