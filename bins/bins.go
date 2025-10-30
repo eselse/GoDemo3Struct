@@ -6,6 +6,8 @@ import (
 	"fmt"
 	"time"
 
+	"3-struct/file"
+
 	"github.com/google/uuid"
 )
 
@@ -18,11 +20,6 @@ type Bin struct {
 
 type BinList struct {
 	Bins []Bin `json:"bins"`
-}
-
-type DB interface {
-	Read(string) ([]byte, error)
-	Write([]byte, error)
 }
 
 func (bins *BinList) ToBytes() ([]byte, error) {
@@ -53,7 +50,7 @@ func NewBin(name string, isPrivate bool) (*Bin, error) {
 	return &result, nil
 }
 
-func NewBins(db DB) *BinList {
+func NewBins(db file.DB) *BinList {
 	file, err := db.Read("bins.json")
 	if err != nil {
 		return &BinList{

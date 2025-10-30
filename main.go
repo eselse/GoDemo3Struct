@@ -1,15 +1,12 @@
 package main
 
 import (
-	"fmt"
-
 	"3-struct/bins"
+	"3-struct/file"
 )
 
 func main() {
-	bin, err := bins.NewBin("example", false)
-	if err != nil {
-		fmt.Println(err.Error())
-	}
-	print(bin.Name, "\n")
+	db := file.NewFileDB()
+	binList := bins.NewBins(db)
+	print(binList, "\n")
 }

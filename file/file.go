@@ -12,9 +12,13 @@ type DB interface {
 	Write(content []byte, name string)
 }
 
-type fileDB struct{}
+type FileDB struct{}
 
-func (fd fileDB) Read(fileName string) ([]byte, error) {
+func NewFileDB() DB {
+	return &FileDB{}
+}
+
+func (fd FileDB) Read(fileName string) ([]byte, error) {
 	data, err := os.ReadFile(fileName)
 	if err != nil {
 		return nil, err
@@ -25,7 +29,7 @@ func (fd fileDB) Read(fileName string) ([]byte, error) {
 	return data, nil
 }
 
-func (fd fileDB) Write(content []byte, name string) {
+func (fd FileDB) Write(content []byte, name string) {
 	file, err := os.Create(name)
 	if err != nil {
 		fmt.Println("Error creating file:", err)
