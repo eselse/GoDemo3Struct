@@ -7,11 +7,12 @@ import (
 	"time"
 
 	"3-struct/file"
+
 	"github.com/google/uuid"
 )
 
 type Bin struct {
-	Id        string    `json:"id"`
+	ID        string    `json:"id"`
 	IsPrivate bool      `json:"is_private"`
 	CreatedAt time.Time `json:"created_at"`
 	Name      string    `json:"name"`
@@ -41,7 +42,7 @@ func NewBin(name string, isPrivate bool) (*Bin, error) {
 	id := generateID()
 	createdAt := time.Now()
 	result := Bin{
-		Id:        id,
+		ID:        id,
 		IsPrivate: isPrivate,
 		CreatedAt: createdAt,
 		Name:      name,
