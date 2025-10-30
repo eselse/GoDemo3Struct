@@ -7,7 +7,7 @@ import (
 	"strings"
 )
 
-func ReadFile(fileName string) ([]byte, error) {
+func Read(fileName string) ([]byte, error) {
 	data, err := os.ReadFile(fileName)
 	if err != nil {
 		return nil, err
@@ -18,9 +18,8 @@ func ReadFile(fileName string) ([]byte, error) {
 	return data, nil
 }
 
-func WriteFile(content []byte, name string) {
+func Write(content []byte, name string) {
 	file, err := os.Create(name)
-
 	if err != nil {
 		fmt.Println("Error creating file:", err)
 	}

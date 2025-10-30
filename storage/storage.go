@@ -1,12 +1,17 @@
 package storage
 
 import (
-	"3-struct/bins"
-	"3-struct/file"
 	"encoding/json"
 	"fmt"
 	"os"
+
+	"3-struct/bins"
 )
+
+type DB interface {
+	Read(string) ([]byte, error)
+	Write([]byte, error)
+}
 
 func SaveToFile(data []byte, name string) {
 	file, err := os.Create(name)
@@ -22,9 +27,8 @@ func SaveToFile(data []byte, name string) {
 	fmt.Println("File written successfully")
 }
 
-func GetFromFile(fileName string) *bins.BinList {
-
-	file, err := file.ReadFile("bins.json")
+func GetFromFile(db DB) *bins.BinList {
+	file, err := db.Read("bins.json")
 	if err != nil {
 		return &bins.BinList{
 			Bins: []bins.Bin{},
