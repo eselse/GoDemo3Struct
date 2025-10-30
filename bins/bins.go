@@ -22,7 +22,7 @@ type BinList struct {
 
 type DB interface {
 	Read(string) ([]byte, error)
-	Werite([]byte, error)
+	Write([]byte, error)
 }
 
 func (bins *BinList) ToBytes() ([]byte, error) {

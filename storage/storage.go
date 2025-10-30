@@ -6,12 +6,8 @@ import (
 	"os"
 
 	"3-struct/bins"
+	"3-struct/file"
 )
-
-type DB interface {
-	Read(string) ([]byte, error)
-	Write([]byte, error)
-}
 
 func SaveToFile(data []byte, name string) {
 	file, err := os.Create(name)
@@ -27,7 +23,7 @@ func SaveToFile(data []byte, name string) {
 	fmt.Println("File written successfully")
 }
 
-func GetFromFile(db DB) *bins.BinList {
+func GetFromFile(db file.DB) *bins.BinList {
 	file, err := db.Read("bins.json")
 	if err != nil {
 		return &bins.BinList{
