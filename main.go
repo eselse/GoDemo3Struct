@@ -1,12 +1,15 @@
 package main
 
 import (
-	"3-struct/bins"
-	"3-struct/file"
+	"fmt"
+
+	"3-struct/config"
 )
 
 func main() {
-	db := file.NewFileDB()
-	binList := bins.NewBins(db)
-	print(binList, "\n")
+	// db := file.NewFileDB()
+	// binList := bins.NewBins(db)
+	someConfig := config.NewConfig("KEY")
+	someKey := someConfig.Key
+	fmt.Println(someKey)
 }
