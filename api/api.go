@@ -1,12 +1,10 @@
 package api
 
 import (
-	"fmt"
-
 	"3-struct/config"
 )
 
-func InitAPI() {
+func InitAPI() *config.Config {
 	newConfig := config.NewConfig("KEY")
-	fmt.Println(newConfig.Key)
+	return newConfig
 }
