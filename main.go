@@ -61,7 +61,7 @@ func main() {
 	// Update a bin
 	if flags.update && flags.file != "" && flags.id != "" {
 		fmt.Printf("Update a bin, from a file, named %s with id %s\n", flags.file, flags.id)
-		ok := api.Update(flags.file, flags.id)
+		ok := api.Update(flags.file, flags.id, config.Key)
 		if ok {
 			fmt.Println("Bin updated successfully.")
 		}
@@ -70,6 +70,10 @@ func main() {
 	// Delete a bin
 	if flags.delete && flags.id != "" {
 		fmt.Printf("Delete a bin with id %s\n", flags.id)
+		ok := api.Delete(flags.id, config.Key)
+		if ok {
+			fmt.Println("Bin removed successfully")
+		}
 	}
 
 	// Get a bin

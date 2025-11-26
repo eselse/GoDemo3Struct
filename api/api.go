@@ -33,7 +33,25 @@ func InitAPI() *config.Config {
 	return newConfig
 }
 
-func Update(fileName, id string) bool {
+func Delete(id, key string) bool {
+	url := "https://api.jsonbin.io/v3/b/" + id
+
+	req, _ := http.NewRequest("DELETE", url, nil)
+
+	req.Header.Add("Content-Type", "application/json")
+	req.Header.Add("X-Master-Key", key)
+
+	res, _ := http.DefaultClient.Do(req)
+
+	defer res.Body.Close()
+	if res.StatusCode != 200 {
+		return false
+	}
+
+	return true
+}
+
+func Update(fileName, id, key string) bool {
 	// Tead file from fileName
 	fileDB := file.NewFileDB()
 	fileBody, err := fileDB.ReadJSON(fileName)
@@ -48,7 +66,7 @@ func Update(fileName, id string) bool {
 	req, _ := http.NewRequest("PUT", url, payload)
 
 	req.Header.Add("Content-Type", "application/json")
-	req.Header.Add("X-Master-Key", "$2a$10$IBITYxZJGdT/7WVYeABpj.QM4oFao6kPxjsvVbZacONvaDJ/mx2/6")
+	req.Header.Add("X-Master-Key", key)
 
 	res, _ := http.DefaultClient.Do(req)
 
@@ -61,7 +79,7 @@ func Update(fileName, id string) bool {
 	return true
 }
 
-func Get(id string, key string) string {
+func Get(id, key string) string {
 	// Create an url with headers and body for request
 	url := "https://api.jsonbin.io/v3/b/" + id
 	fmt.Println(url)
