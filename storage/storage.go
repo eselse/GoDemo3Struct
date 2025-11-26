@@ -9,22 +9,29 @@ import (
 	"3-struct/file"
 )
 
-func SaveToFile(data []byte, name string) {
+func SaveToFile(data []byte, name string) (bool, error) {
 	file, err := os.Create(name)
 	if err != nil {
-		fmt.Println("Error creating file:", err)
+		return false, err
 	}
 	defer file.Close()
 	_, err = file.Write(data)
 	if err != nil {
-		fmt.Println("Error writing to file:", err)
-		return
+		return false, err
 	}
-	fmt.Println("File written successfully")
+	return true, nil
 }
 
-func GetFromFile(db file.DB) *bins.BinList {
-	file, err := db.Read("bins.json")
+func ReadFile(fileName string) ([]byte, error) {
+	data, err := os.ReadFile(fileName)
+	if err != nil {
+		return []byte{}, err
+	}
+	return data, nil
+}
+
+func GetBinsFromFile(db file.DB) *bins.BinList {
+	file, err := db.ReadJSON("bins.json")
 	if err != nil {
 		return &bins.BinList{
 			Bins: []bins.Bin{},
