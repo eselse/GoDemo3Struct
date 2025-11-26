@@ -4,10 +4,21 @@ import (
 	"flag"
 	"fmt"
 
-	"3-struct/storage"
+	"3-struct/api"
 )
 
-func main() {
+type flagsStruct struct {
+	create bool
+	update bool
+	delete bool
+	get    bool
+	list   bool
+	file   string
+	name   string
+	id     string
+}
+
+func defineFlags() flagsStruct {
 	// Define flags
 	create := flag.Bool("create", false, "Create a new bin")
 	update := flag.Bool("update", false, "Update an existing bin")
@@ -18,49 +29,53 @@ func main() {
 	name := flag.String("name", "", "Name for the bin")
 	id := flag.String("id", "", "Bin ID")
 	flag.Parse()
+	return flagsStruct{
+		create: *create,
+		update: *update,
+		delete: *delete,
+		get:    *get,
+		list:   *list,
+		file:   *file,
+		name:   *name,
+		id:     *id,
+	}
+}
 
+func main() {
 	// Load configuration
-	// config := api.InitAPI()
-
-	// fmt.Println("Key loaded", config.Key)
+	config := api.InitAPI()
 
 	// Execute commands
 	// Create a bin from a file
-	if *create && *file != "" && *name != "" {
-		fmt.Printf("Create a bin, named %s from a file, named %s\n", *file, *name)
+	flags := defineFlags()
+	if flags.create && flags.file != "" && flags.name != "" {
+		fmt.Printf("Create a bin, named %s from a file, named %s\n", flags.file, flags.name)
+		binID, err := api.CreateBin(flags.file, flags.name, config.Key)
+		if err != nil {
+			fmt.Println(err.Error())
+		}
+		fmt.Println(binID)
 	}
 
 	// Update a bin
-	if *update && *file != "" && *id != "" {
-		fmt.Printf("Update a bin, from a file, named %s with id %s\n", *file, *id)
+	if flags.update && flags.file != "" && flags.id != "" {
+		fmt.Printf("Update a bin, from a file, named %s with id %s\n", flags.file, flags.id)
 	}
 
 	// Delete a bin
-	if *delete && *id != "" {
-		fmt.Printf("Delete a bin with id %s\n", *id)
+	if flags.delete && flags.id != "" {
+		fmt.Printf("Delete a bin with id %s\n", flags.id)
 	}
 
 	// Get a bin
-	if *get && *id != "" {
-		fmt.Printf("Get bin with id %s\n", *id)
+	if flags.get && flags.id != "" {
+		fmt.Printf("Get bin with id %s\n", flags.id)
 	}
 
 	// Get a list of bins
-	if *list {
+	if flags.list {
 		fmt.Println("Get list of all bins from a file")
 	}
-
-	someString := "hello there"
-	fileName := "file.txt"
-	_, err := storage.SaveToFile([]byte(someString), fileName)
-	if err != nil {
-		printError(err)
-	}
-	// resultString, err := storage.ReadFile(fileName)
-	// if err != nil {
-	// 	printError(err)
-	// }
-	// fmt.Println(string(resultString))
 }
 
 func printError(err error) {
