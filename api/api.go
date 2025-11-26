@@ -33,6 +33,25 @@ func InitAPI() *config.Config {
 	return newConfig
 }
 
+func Get(id string, key string) string {
+	// Create an url with headers and body for request
+	url := "https://api.jsonbin.io/v3/b/" + id
+	fmt.Println(url)
+	req, _ := http.NewRequest("GET", url, nil)
+	req.Header.Add("Content-Type", "application/json")
+	req.Header.Add("X-Master-Key", key)
+
+	// Get result
+	res, _ := http.DefaultClient.Do(req)
+
+	defer res.Body.Close()
+
+	// Get body of result
+	body, _ := io.ReadAll(res.Body)
+
+	return string(body)
+}
+
 func List() {
 	fileDB := file.NewFileDB()
 	data, err := fileDB.ReadPlain("my-bin")

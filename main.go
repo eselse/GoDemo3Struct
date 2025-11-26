@@ -71,6 +71,8 @@ func main() {
 	// Get a bin
 	if flags.get && flags.id != "" {
 		fmt.Printf("Get bin with id %s\n", flags.id)
+		result := api.Get(flags.id, config.Key)
+		fmt.Println(result)
 	}
 
 	// Get a list of bins
