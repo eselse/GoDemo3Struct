@@ -51,7 +51,7 @@ func NewBin(name string, isPrivate bool) (*Bin, error) {
 }
 
 func NewBins(db file.DB) *BinList {
-	file, err := db.Read("bins.json")
+	file, err := db.ReadJSON("bins.json")
 	if err != nil {
 		return &BinList{
 			Bins: []Bin{},

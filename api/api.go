@@ -33,12 +33,21 @@ func InitAPI() *config.Config {
 	return newConfig
 }
 
-func CreateBin(fileName string, binName string, key string) (string, error) {
+func List() {
+	fileDB := file.NewFileDB()
+	data, err := fileDB.ReadPlain("my-bin")
+	if err != nil {
+		fmt.Println(err.Error())
+	}
+	fmt.Println(string(data))
+}
+
+func CreateBin(fileName, binName, name, key string) error {
 	// Tead file from fileName
 	fileDB := file.NewFileDB()
-	fileBody, err := fileDB.Read(fileName)
+	fileBody, err := fileDB.ReadJSON(fileName)
 	if err != nil {
-		return "", err
+		return err
 	}
 
 	// Create an url with headers and body for request
@@ -61,11 +70,15 @@ func CreateBin(fileName string, binName string, key string) (string, error) {
 	var bodyJSON binCreationResonse
 	err = json.Unmarshal(body, &bodyJSON)
 	if err != nil {
-		return "", err
+		return err
 	}
 
 	// Get an ID for return
 	createdBinID := bodyJSON.ID
-	fmt.Printf("New bin was created, title is %s ID is %s", binName, createdBinID)
-	return createdBinID, nil
+	fmt.Printf("New bin was created, title is %s ID is %s\n", binName, createdBinID)
+
+	// Save ID to file
+	resultString := createdBinID + "\n"
+	err = fileDB.Append([]byte(resultString), name)
+	return nil
 }

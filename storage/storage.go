@@ -31,7 +31,7 @@ func ReadFile(fileName string) ([]byte, error) {
 }
 
 func GetBinsFromFile(db file.DB) *bins.BinList {
-	file, err := db.Read("bins.json")
+	file, err := db.ReadJSON("bins.json")
 	if err != nil {
 		return &bins.BinList{
 			Bins: []bins.Bin{},

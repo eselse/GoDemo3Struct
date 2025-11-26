@@ -52,11 +52,10 @@ func main() {
 	// Create a bin from a file
 	flags := defineFlags()
 	if flags.create && flags.file != "" && flags.name != "" {
-		binID, err := api.CreateBin(flags.file, flags.binName, config.Key)
+		err := api.CreateBin(flags.file, flags.binName, flags.name, config.Key)
 		if err != nil {
-			fmt.Println(err.Error())
+			printError(err)
 		}
-		fmt.Sprint(binID)
 	}
 
 	// Update a bin
@@ -76,7 +75,8 @@ func main() {
 
 	// Get a list of bins
 	if flags.list {
-		fmt.Println("Get list of all bins from a file")
+		// fmt.Println("Get list of all bins from a file")
+		api.List()
 	}
 }
 
