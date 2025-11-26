@@ -8,14 +8,15 @@ import (
 )
 
 type flagsStruct struct {
-	create bool
-	update bool
-	delete bool
-	get    bool
-	list   bool
-	file   string
-	name   string
-	id     string
+	create  bool
+	update  bool
+	delete  bool
+	get     bool
+	list    bool
+	file    string
+	name    string
+	id      string
+	binName string
 }
 
 func defineFlags() flagsStruct {
@@ -26,18 +27,20 @@ func defineFlags() flagsStruct {
 	get := flag.Bool("get", false, "Get a bin by ID")
 	list := flag.Bool("list", false, "List all stored bins")
 	file := flag.String("file", "", "JSON file to use")
-	name := flag.String("name", "", "Name for the bin")
+	name := flag.String("name", "", "Name for the file with saved bins")
+	binName := flag.String("binName", "binName", "Name for the bin")
 	id := flag.String("id", "", "Bin ID")
 	flag.Parse()
 	return flagsStruct{
-		create: *create,
-		update: *update,
-		delete: *delete,
-		get:    *get,
-		list:   *list,
-		file:   *file,
-		name:   *name,
-		id:     *id,
+		create:  *create,
+		update:  *update,
+		delete:  *delete,
+		get:     *get,
+		list:    *list,
+		file:    *file,
+		name:    *name,
+		id:      *id,
+		binName: *binName,
 	}
 }
 
@@ -49,12 +52,11 @@ func main() {
 	// Create a bin from a file
 	flags := defineFlags()
 	if flags.create && flags.file != "" && flags.name != "" {
-		fmt.Printf("Create a bin, named %s from a file, named %s\n", flags.file, flags.name)
-		binID, err := api.CreateBin(flags.file, flags.name, config.Key)
+		binID, err := api.CreateBin(flags.file, flags.binName, config.Key)
 		if err != nil {
 			fmt.Println(err.Error())
 		}
-		fmt.Println(binID)
+		fmt.Sprint(binID)
 	}
 
 	// Update a bin
