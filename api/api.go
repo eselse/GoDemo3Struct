@@ -33,6 +33,34 @@ func InitAPI() *config.Config {
 	return newConfig
 }
 
+func Update(fileName, id string) bool {
+	// Tead file from fileName
+	fileDB := file.NewFileDB()
+	fileBody, err := fileDB.ReadJSON(fileName)
+	if err != nil {
+		return false
+	}
+
+	// Create an url with headers and body for request
+	url := "https://api.jsonbin.io/v3/b/" + id
+
+	payload := strings.NewReader(string(fileBody))
+	req, _ := http.NewRequest("PUT", url, payload)
+
+	req.Header.Add("Content-Type", "application/json")
+	req.Header.Add("X-Master-Key", "$2a$10$IBITYxZJGdT/7WVYeABpj.QM4oFao6kPxjsvVbZacONvaDJ/mx2/6")
+
+	res, _ := http.DefaultClient.Do(req)
+
+	defer res.Body.Close()
+
+	if res.StatusCode != 200 {
+		return false
+	}
+
+	return true
+}
+
 func Get(id string, key string) string {
 	// Create an url with headers and body for request
 	url := "https://api.jsonbin.io/v3/b/" + id
