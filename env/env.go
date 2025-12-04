@@ -2,6 +2,7 @@ package env
 
 import (
 	"bufio"
+	"log"
 	"os"
 	"strings"
 )
@@ -11,7 +12,17 @@ func LoadEnv(filename string) error {
 	if err != nil {
 		return err // file not found is acceptable in many cases
 	}
-	defer file.Close()
+	defer func() {
+		closeErr := file.Close()
+		if closeErr != nil {
+			// Log it
+			log.Printf("warning: failed to close file: %v", closeErr)
+			// And optionally propagate if no other error occurred
+			if err == nil {
+				err = closeErr
+			}
+		}
+	}()
 
 	scanner := bufio.NewScanner(file)
 	for scanner.Scan() {
@@ -40,7 +51,10 @@ func LoadEnv(filename string) error {
 		// Remove surrounding quotes if present
 		value = strings.Trim(value, `"'`)
 
-		os.Setenv(key, value)
+		err := os.Setenv(key, value)
+		if err != nil {
+			return err
+		}
 	}
 
 	return scanner.Err()
