@@ -3,6 +3,7 @@ package file
 import (
 	"errors"
 	"fmt"
+	"log"
 	"os"
 	"strings"
 )
@@ -44,7 +45,17 @@ func (fd FileDB) Write(content []byte, name string) {
 	if err != nil {
 		fmt.Println("Error creating file:", err)
 	}
-	defer file.Close()
+	defer func() {
+		closeErr := file.Close()
+		if closeErr != nil {
+			// Log it
+			log.Printf("warning: failed to close file: %v", closeErr)
+			// And optionally propagate if no other error occurred
+			if err == nil {
+				err = closeErr
+			}
+		}
+	}()
 	_, err = file.Write(content)
 	if err != nil {
 		fmt.Println("Error writing to file:", err)
@@ -59,7 +70,17 @@ func (fd FileDB) Append(content []byte, name string) error {
 	if err != nil {
 		return err
 	}
-	defer f.Close()
+	defer func() {
+		closeErr := f.Close()
+		if closeErr != nil {
+			// Log it
+			log.Printf("warning: failed to close file: %v", closeErr)
+			// And optionally propagate if no other error occurred
+			if err == nil {
+				err = closeErr
+			}
+		}
+	}()
 
 	// Write data to the file
 	if _, err := f.WriteString(string(content)); err != nil {
